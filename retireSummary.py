@@ -21,6 +21,7 @@ for a in range(sheet.nrows):  # 循环读取表格内容（每次读取一行数
     information.append(cells)  # 把每次循环读取的数据插入到list
 
 print(information[0])
+print(sheet.name)
 
 
 def dateTransfer(information, information_number, inforNum):
@@ -68,14 +69,14 @@ number = 0
 for info in information:
     number += 1
     p = document.paragraphs[1].clear()
-    run1 = p.add_run('（□央企  □省企  □市企  □区企） No: ' + str(number))
+    run1 = p.add_run('（□央企  □省企  □市企  □区企）  （' + sheet.name + '） No: ' + str(number))
     run1.font.size = Pt(14)
     run1.font.name = '宋体'
     run1.element.rPr.rFonts.set(qn('w:eastAsia'), '宋体')
     for table in document.tables:  # 遍历文档中的所有表格
         rows_num = len(table.rows)
         columns_num = len(table.columns)
-        # print(table.cell(13, 19).text)
+        print(table.cell(4, 5).text)
 
         num = 0
         for eachCell in information[information_number]:
@@ -101,6 +102,39 @@ for info in information:
         enterData(2, 10, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 14, True)  # 特长技能
         enterData(2, 17, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 15, True)  # 退休类别
         enterData(2, 21, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 16, True)  # 兴趣及爱好
+        # 特殊人员
+        if str(information[information_number][17]) == '80以上':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄√      孤寡老人□    劳模□    特困□    重病□    特殊工种□"
+        elif str(information[information_number][17]) == '建国前参加工作':
+            table.cell(3, 7).text = "建国前参加工作√     八十岁以上高龄□      孤寡老人□    劳模□    特困□    重病□    特殊工种□"
+        elif str(information[information_number][17]) == '孤寡老人':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人√    劳模□    特困□    重病□    特殊工种□"
+        elif str(information[information_number][17]) == '劳模':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人□    劳模√    特困□    重病□    特殊工种□"
+        elif str(information[information_number][17]) == '特困':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人□    劳模□    特困√    重病□    特殊工种□"
+        elif str(information[information_number][17]) == '重病':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人□    劳模□    特困□    重病√    特殊工种□"
+        elif str(information[information_number][17]) == '特殊工种':
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人□    劳模□    特困□    重病□    特殊工种√"
+        else:
+            table.cell(3, 7).text = "建国前参加工作□     八十岁以上高龄□      孤寡老人□    劳模□    特困□    重病□    特殊工种□"
+        table.cell(3, 7).paragraphs[0].runs[0].font.size = Pt(10.5)
+        table.cell(3, 7).paragraphs[0].runs[0].font.name = u'宋体'
+        table.cell(3, 7).paragraphs[0].paragraph_format.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+        # print(str(information[information_number][18]))
+        # 是否享受低保
+        if str(information[information_number][18]) == '是':
+            table.cell(4, 5).text = '是√  否□'
+        elif str(information[information_number][18]) == '否':
+            table.cell(4, 5).text = '是□  否√'
+        else:
+            table.cell(4, 5).text = '是□  否□'
+        table.cell(4, 5).paragraphs[0].runs[0].font.size = Pt(10.5)
+        table.cell(4, 5).paragraphs[0].runs[0].font.name = u'宋体'
+        table.cell(4, 5).paragraphs[0].paragraph_format.alignment = WD_TABLE_ALIGNMENT.CENTER
+
         enterData(4, 14, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 19, True)  # 社会保险关系所在地:养老
         enterData(5, 14, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 20, True)  # 社会保险关系所在地:医疗
         enterData(6, 5, WD_TABLE_ALIGNMENT.CENTER, information_number, information, 22, True)  # 工伤伤残等级
